@@ -1,6 +1,6 @@
 # RETFound-vs-Traditional-Models
 
-This repository describes how we did the comparison of traditional models to fine-tuned RETFound model for a multi-classification task.
+This repository describes shows the code we used in order to train and evaluate 3 traditional computer vision models so we can compare their performances to that of fine-tuned RETFound.
 
 The dataset could be found on: https://www.kaggle.com/datasets/gunavenkatdoddi/eye-diseases-classification
 
