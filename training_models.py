@@ -10,12 +10,15 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelBinarizer
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# Hyperparameters
 NUM_CLASSES = 4
 INPUT_SIZE = 256  
 BATCH_SIZE = 16   
 EPOCHS = 10   
 LR = 1e-3  
 
+# Data
 data_paths = {
     "train": "./data/train",  
     "val": "./data/val",   
@@ -36,6 +39,7 @@ train_loader = DataLoader(train_dataset, BATCH_SIZE=BATCH_SIZE, shuffle=True)
 val_loader = DataLoader(val_dataset, BATCH_SIZE=BATCH_SIZE, shuffle=False)
 test_loader = DataLoader(test_dataset, BATCH_SIZE=BATCH_SIZE, shuffle=False)
 
+# Model loading
 def load_model(configuration):
     name = configuration["name"]
     if configuration["source"] == "timm":
@@ -56,6 +60,7 @@ model_configs = [
     {"name": "efficientnet_b0", "source": "timm", "pretrained": True},
 ]
 
+# Training
 def train_model(model, train_loader, val_loader, EPOCHS=10, lr=1e-3):
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
@@ -83,6 +88,7 @@ def train_model(model, train_loader, val_loader, EPOCHS=10, lr=1e-3):
             best_val_accuracy = val_accuracy
             torch.save(model.state_dict(), "best_model.pth")  
 
+#Evaluation
 def evaluate(model, loader):
     model.eval()  
     preds_arr = []
@@ -112,6 +118,7 @@ def evaluate(model, loader):
 
 results = {}
 
+# Main loop
 for configuration in model_configs:
     model = load_model(configuration)
     
@@ -122,7 +129,8 @@ for configuration in model_configs:
     accuracy, f1, roc_auc = evaluate(model, test_loader)
     results[configuration["name"]] = {"accuracy": accuracy, "f1": f1, "roc_auc": roc_auc}
 
-results['RETFound'] = {'accuracy': 0.89, 'f1': 0.89, 'roc_auc': 0.98}  
+# Results plotting
+results['RETFound'] = {'accuracy': 0.89, 'f1': 0.89, 'roc_auc': 0.98} #added manually since RETFound fine-tuning and evaluation was done seperately
 
 model_names = list(results.keys())
 accuracies = [results[name]["accuracy"] for name in model_names]
